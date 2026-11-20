@@ -1,0 +1,14 @@
+{
+  "maxBalance": 10,
+  "energyPerTurn": 3,
+  "handSize": 5,
+  "healOnWin": 3,
+  "palmSaveBalance": 1,
+  "maxGrip": 3,
+  "fatigueStartTurn": 6,
+  "fatigueBase": 1,
+  "fatigueEscalateEvery": 3,
+  "rewardChoices": 3,
+  "fallbackGripOnMissingGrip": 1,
+  "bracket": ["village", "elephant", "falcon"]
+}
