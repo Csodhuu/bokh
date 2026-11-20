@@ -10,35 +10,37 @@ import {
   validateData,
   type MatchState,
 } from '../src/core';
-import { cloneData, matchWithHand } from './helpers';
+import { cloneData, matchWithHand, TEST_DATA } from './helpers';
 
-const play = (s: MatchState, handIndex: number) => applyAction(s, { type: 'PlayCard', handIndex });
-const endTurn = (s: MatchState) => applyAction(s, { type: 'EndTurn' });
+const D = TEST_DATA;
+const play = (s: MatchState, handIndex: number) => applyAction(s, { type: 'PlayCard', handIndex }, D);
+const endTurn = (s: MatchState) => applyAction(s, { type: 'EndTurn' }, D);
 
 describe('data', () => {
   it('is internally consistent', () => {
     expect(() => validateData(DEFAULT_DATA)).not.toThrow();
+    expect(() => validateData(TEST_DATA)).not.toThrow();
   });
 });
 
 describe('match setup', () => {
   it('starts turn 1 with 3 energy and 5 cards, grip at distance', () => {
-    const { state } = createMatch({ opponentId: 'village', deck: DEFAULT_DATA.starterDeck, seed: 42 });
+    const { state } = createMatch({ opponentId: 'village', deck: D.starterDeck, seed: 42 }, D);
     expect(state.turn).toBe(1);
     expect(state.player.energy).toBe(3);
     expect(state.hand).toHaveLength(5);
     expect(state.drawPile).toHaveLength(5);
     expect(state.grip).toBe(0);
     expect(state.player.balance).toBe(10);
-    expect(state.opponent.balance).toBe(DEFAULT_DATA.opponents.village!.balance);
+    expect(state.opponent.balance).toBe(8);
   });
 });
 
 describe('grip requirements and energy', () => {
   it('blocks a card that needs more grip, with the reason', () => {
     const s = matchWithHand(['hook'], { grip: 1 });
-    expect(canPlay(s, 0)).toBe(false);
-    expect(playBlockReason(s, 0)).toEqual({ kind: 'grip', need: 2, have: 1 });
+    expect(canPlay(s, 0, D)).toBe(false);
+    expect(playBlockReason(s, 0, D)).toEqual({ kind: 'grip', need: 2, have: 1 });
     const { state, events } = play(s, 0);
     expect(events).toEqual([{ type: 'PlayRejected', reason: { kind: 'grip', need: 2, have: 1 } }]);
     expect(state.hand).toHaveLength(1);
@@ -59,14 +61,14 @@ describe('grip requirements and energy', () => {
     const s = matchWithHand(['hook', 'hook', 'twist'], { grip: 2 });
     const r1 = play(s, 0);
     expect(r1.state.player.energy).toBe(1);
-    expect(playBlockReason(r1.state, 0)).toEqual({ kind: 'energy', need: 2, have: 1 });
+    expect(playBlockReason(r1.state, 0, D)).toEqual({ kind: 'energy', need: 2, have: 1 });
     const r2 = play(r1.state, 1); // twist costs 1
     expect(r2.state.player.energy).toBe(0);
   });
 
   it('0-cost cards are playable with 0 energy', () => {
     const s = matchWithHand(['zasuulSlap'], { energy: 0 });
-    expect(canPlay(s, 0)).toBe(true);
+    expect(canPlay(s, 0, D)).toBe(true);
   });
 
   it('grip is clamped to 0..3', () => {
@@ -214,7 +216,7 @@ describe('opponent intents', () => {
   it('an attack without enough grip raises grip instead', () => {
     const s = matchWithHand([], { opponent: 'elephant', grip: 1 });
     s.opponent.intentIndex = 2; // big throw needs 2
-    const intent = effectiveIntent(s);
+    const intent = effectiveIntent(s, D);
     expect(intent).toMatchObject({ type: 'grip', convertedFrom: 'bigThrow', amount: 1 });
     const { state } = endTurn(s);
     expect(state.grip).toBe(2);
@@ -226,7 +228,7 @@ describe('opponent intents', () => {
     let s = matchWithHand(['kneeSweep'], { grip: 1 });
     s.opponent.intentIndex = 1; // twist 3
     s = play(s, 0).state;
-    expect(effectiveIntent(s).totalDamage).toBe(1);
+    expect(effectiveIntent(s, D).totalDamage).toBe(1);
     const { state } = endTurn(s);
     expect(state.player.balance).toBe(9);
     expect(state.opponent.attackPenalty).toBe(0);
@@ -236,7 +238,7 @@ describe('opponent intents', () => {
     let s = matchWithHand([]);
     const seen: string[] = [];
     for (let i = 0; i < 4; i++) {
-      seen.push(effectiveIntent(s).moveId);
+      seen.push(effectiveIntent(s, D).moveId);
       s = endTurn(s).state;
       s.hand = [];
       s.grip = 1;
@@ -247,7 +249,7 @@ describe('opponent intents', () => {
 
 describe('fatigue', () => {
   it('starts on turn 6 and escalates every 3 turns', () => {
-    expect([1, 5, 6, 7, 8, 9, 11, 12].map((t) => fatigueForTurn(t))).toEqual([0, 0, 1, 1, 1, 2, 2, 3]);
+    expect([1, 5, 6, 7, 8, 9, 11, 12].map((t) => fatigueForTurn(t, D))).toEqual([0, 0, 1, 1, 1, 2, 2, 3]);
   });
 
   it('hits both wrestlers at the start of the turn, ignoring guard', () => {
@@ -329,7 +331,7 @@ describe('sacrifice throw', () => {
 
 describe('deck cycling', () => {
   it('discards the hand at end of turn and reshuffles when the draw pile is empty', () => {
-    let { state } = createMatch({ opponentId: 'village', deck: DEFAULT_DATA.starterDeck, seed: 7 });
+    let { state } = createMatch({ opponentId: 'village', deck: D.starterDeck, seed: 7 }, D);
     state = endTurn(state).state; // turn 2: draws the other 5
     expect(state.drawPile).toHaveLength(0);
     const r = endTurn(state); // turn 3: must reshuffle

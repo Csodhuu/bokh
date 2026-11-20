@@ -1,25 +1,25 @@
 {
   "village": {
-    "balance": 8,
+    "balance": 24,
     "pattern": [
       { "id": "grab", "type": "grip", "amount": 1 },
-      { "id": "twist", "type": "attack", "damage": 3, "requiresGrip": 1 },
-      { "id": "brace", "type": "guard", "amount": 3 }
+      { "id": "twist", "type": "attack", "damage": 9, "requiresGrip": 1 },
+      { "id": "brace", "type": "guard", "amount": 5 }
     ]
   },
   "elephant": {
-    "balance": 14,
+    "balance": 26,
     "pattern": [
-      { "id": "brace", "type": "guard", "amount": 4 },
+      { "id": "brace", "type": "guard", "amount": 8 },
       { "id": "grab", "type": "grip", "amount": 1 },
-      { "id": "bigThrow", "type": "attack", "damage": 6, "requiresGrip": 2 }
+      { "id": "bigThrow", "type": "attack", "damage": 12, "requiresGrip": 2 }
     ]
   },
   "falcon": {
-    "balance": 7,
+    "balance": 24,
     "pattern": [
       { "id": "grab", "type": "grip", "amount": 1 },
-      { "id": "quickStrikes", "type": "attack", "damage": 2, "hits": 2, "requiresGrip": 1 }
+      { "id": "quickStrikes", "type": "attack", "damage": 6, "hits": 2, "requiresGrip": 1 }
     ]
   }
 }

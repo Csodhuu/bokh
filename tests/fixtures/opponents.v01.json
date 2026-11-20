@@ -1,0 +1,25 @@
+{
+  "village": {
+    "balance": 8,
+    "pattern": [
+      { "id": "grab", "type": "grip", "amount": 1 },
+      { "id": "twist", "type": "attack", "damage": 3, "requiresGrip": 1 },
+      { "id": "brace", "type": "guard", "amount": 3 }
+    ]
+  },
+  "elephant": {
+    "balance": 14,
+    "pattern": [
+      { "id": "brace", "type": "guard", "amount": 4 },
+      { "id": "grab", "type": "grip", "amount": 1 },
+      { "id": "bigThrow", "type": "attack", "damage": 6, "requiresGrip": 2 }
+    ]
+  },
+  "falcon": {
+    "balance": 7,
+    "pattern": [
+      { "id": "grab", "type": "grip", "amount": 1 },
+      { "id": "quickStrikes", "type": "attack", "damage": 2, "hits": 2, "requiresGrip": 1 }
+    ]
+  }
+}
