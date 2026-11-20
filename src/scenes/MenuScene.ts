@@ -7,7 +7,6 @@ import { Wrestler } from '../ui/wrestler';
 
 export class MenuScene extends Phaser.Scene {
   private wrestlers: Wrestler[] = [];
-  private showRules = false;
 
   constructor() {
     super('Menu');
@@ -31,19 +30,13 @@ export class MenuScene extends Phaser.Scene {
     this.add.text(W / 2, 150, t('subtitle'), textStyle(26, C.cream)).setOrigin(0.5);
     this.add.text(W - 16, H - 14, `v${VERSION}`, textStyle(16, C.cream)).setOrigin(1, 1).setAlpha(0.5);
 
-    // The rules panel replaces the buttons, so taps can't fall through to them.
-    if (this.showRules) {
-      this.drawRules();
-      return;
-    }
-
     makeButton(this, W / 2, 600, 300, 76, t('menu.start'), () => {
       session.newRun();
       session.startMatch();
       this.scene.start('Match');
     }, { fontSize: 32 });
 
-    makeButton(this, W / 2 - 330, 600, 240, 60, t('menu.howTo'), () => this.toggleRules(), {
+    makeButton(this, W / 2 - 330, 600, 240, 60, `? ${t('menu.howTo')}`, () => this.scene.start('Guide', { from: 'Menu' }), {
       fill: C.panelLight,
       textColor: C.cream,
       fontSize: 24,
@@ -56,20 +49,5 @@ export class MenuScene extends Phaser.Scene {
 
   update(time: number): void {
     for (const w of this.wrestlers) w.update(time);
-  }
-
-  private toggleRules(): void {
-    this.showRules = !this.showRules;
-    this.scene.restart();
-  }
-
-  private drawRules(): void {
-    const panel = this.add.rectangle(W / 2, 360, 1060, 520, C.panel, 0.97).setStrokeStyle(3, C.gold).setRounded(18);
-    panel.setInteractive();
-    this.add.text(W / 2, 140, t('menu.howTo'), textStyle(36, C.gold, { fontStyle: 'bold' })).setOrigin(0.5);
-    this.add
-      .text(W / 2, 190, t('menu.rules'), textStyle(25, C.cream, { wordWrap: { width: 980 }, lineSpacing: 12 }))
-      .setOrigin(0.5, 0);
-    makeButton(this, W / 2, 570, 200, 60, t('menu.back'), () => this.toggleRules(), { fontSize: 24 });
   }
 }

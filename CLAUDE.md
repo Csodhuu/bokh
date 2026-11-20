@@ -18,7 +18,8 @@ src/core/     PURE game logic. No Phaser, no DOM, no window/localStorage.
 src/data/     JSON data: cards.json, opponents.json, rules.json
 src/i18n/     en.json (default), mn.json; t(key, params)
 src/session.ts  view-side holder of the current RunState/MatchState
-src/scenes/   Phaser scenes (Menu, Match, Reward, RunEnd) — view only
+src/scenes/   Phaser scenes (Menu, Match, Reward, RunEnd, Guide) — view only
+src/ui/tips.ts  pure `matchTip(state)` coaching tips (tested in tests/tips.test.ts)
 src/ui/       Phaser drawing helpers
 scripts/      sim.ts (greedy bot balance sim), tune.ts
 tests/        Vitest
@@ -82,6 +83,7 @@ tests/        Vitest
 - **i18n:** every user-facing string goes through `t()`. Add keys to both
   `en.json` and `mn.json` (a test checks MN has every EN key). Mongolian
   names are placeholders pending review by a wrestling coach.
+- **Guide text** (Guide scene, tips) must take numbers from data via i18n params, never hard-code them. New mechanics need a Guide entry in both languages.
 - **Mobile:** 1280×720 base, `Scale.FIT`. Keep text ≥ 15px at base size;
   important text ≥ 20px.
 - Commit messages: imperative summary line, body explains why.
