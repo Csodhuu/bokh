@@ -1,0 +1,26 @@
+{
+  "starterDeck": [
+    "sleeveGrip", "sleeveGrip", "sleeveGrip",
+    "hook", "hook",
+    "twist",
+    "lowerStance", "lowerStance",
+    "reversal",
+    "zasuulSlap"
+  ],
+  "rewardPool": ["liftAndThrow", "hipThrow", "kneeSweep", "stepBack", "legGrab", "sacrificeThrow"],
+  "cards": {
+    "sleeveGrip":     { "cost": 1, "effects": [{ "type": "grip", "amount": 1 }] },
+    "hook":           { "cost": 2, "requiresGrip": 2, "effects": [{ "type": "damage", "amount": 4 }] },
+    "twist":          { "cost": 1, "requiresGrip": 1, "effects": [{ "type": "damage", "amount": 2 }] },
+    "lowerStance":    { "cost": 1, "effects": [{ "type": "guard", "amount": 3 }] },
+    "reversal":       { "cost": 2, "effects": [{ "type": "reversal" }] },
+    "zasuulSlap":     { "cost": 0, "exhaust": true, "effects": [{ "type": "energyNextTurn", "amount": 1 }] },
+
+    "liftAndThrow":   { "cost": 3, "requiresGrip": 3, "effects": [{ "type": "damage", "amount": 7 }] },
+    "hipThrow":       { "cost": 2, "requiresGrip": 2, "effects": [{ "type": "damage", "amount": 5 }, { "type": "setGrip", "value": 1 }] },
+    "kneeSweep":      { "cost": 1, "requiresGrip": 1, "effects": [{ "type": "damage", "amount": 2 }, { "type": "weakenNextAttack", "amount": 2 }] },
+    "stepBack":       { "cost": 0, "effects": [{ "type": "grip", "amount": -1 }, { "type": "guard", "amount": 2 }] },
+    "legGrab":        { "cost": 1, "effects": [{ "type": "grip", "amount": 2 }] },
+    "sacrificeThrow": { "cost": 2, "effects": [{ "type": "damage", "amount": 5 }, { "type": "selfDamage", "amount": 3 }] }
+  }
+}
