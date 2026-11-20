@@ -10,6 +10,7 @@ import {
   createRun,
   DEFAULT_DATA,
   startRunMatch,
+  toSeed,
   type MatchEvent,
   type MatchState,
 } from '../src/core';
@@ -84,5 +85,14 @@ describe('architecture', () => {
       expect(src, f).not.toMatch(/require\(\s*['"]phaser['"]/i);
       expect(src, f).not.toMatch(/from\s+['"]\.\.\/scenes/);
     }
+  });
+});
+
+describe('seeds', () => {
+  it('numeric strings are used as-is, other strings are hashed', () => {
+    expect(toSeed('42')).toBe(42);
+    expect(toSeed(' 123 ')).toBe(123);
+    expect(toSeed('naadam')).toBe(toSeed('naadam'));
+    expect(toSeed('naadam')).not.toBe(toSeed('naadan'));
   });
 });

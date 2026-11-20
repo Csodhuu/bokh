@@ -34,7 +34,8 @@ export function shuffle<T>(items: readonly T[], rng: number): [T[], number] {
 /** Normalises any number/string into a uint32 seed. */
 export function toSeed(input: number | string): number {
   if (typeof input === 'number' && Number.isFinite(input)) return input >>> 0;
-  const s = String(input);
+  const s = String(input).trim();
+  if (/^\d+$/.test(s) && Number(s) <= 0xffffffff) return Number(s) >>> 0;
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) {
     h ^= s.charCodeAt(i);

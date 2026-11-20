@@ -1,15 +1,25 @@
 import Phaser from 'phaser';
+import { installDebugOverlay } from './debug';
+import { getLang, setLang } from './i18n';
+import { MatchScene } from './scenes/MatchScene';
+import { MenuScene } from './scenes/MenuScene';
+import { RewardScene } from './scenes/RewardScene';
+import { RunEndScene } from './scenes/RunEndScene';
+import { DEBUG, session } from './session';
+import { C, H, W } from './ui/theme';
 
-class BootScene extends Phaser.Scene {
-  create(): void {
-    this.add.text(640, 360, 'Bökh', { fontSize: '64px', color: '#f3e6c8' }).setOrigin(0.5);
-  }
-}
+setLang(getLang());
 
-new Phaser.Game({
+const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
-  backgroundColor: '#1b1410',
-  scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH, width: 1280, height: 720 },
-  scene: [BootScene],
+  backgroundColor: C.bg,
+  scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH, width: W, height: H },
+  input: { activePointers: 2 },
+  scene: [MenuScene, MatchScene, RewardScene, RunEndScene],
 });
+
+if (DEBUG) {
+  installDebugOverlay(game);
+  Object.assign(window, { game, session });
+}

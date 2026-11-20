@@ -335,13 +335,14 @@ function dealDamage(ctx: Ctx, side: Side, amount: number, source: DamageSource, 
   if (dmg <= 0) return;
   const from = w.balance;
   let to = from - dmg;
-  if (side === 'player' && to <= 0 && !s.player.palmSaveUsed) {
+  const palmSave = side === 'player' && to <= 0 && !s.player.palmSaveUsed;
+  if (palmSave) {
     s.player.palmSaveUsed = true;
     to = data.rules.palmSaveBalance;
-    ev.push({ type: 'PalmSave' });
   }
   w.balance = to;
   ev.push({ type: 'BalanceChanged', side, from, to, source });
+  if (palmSave) ev.push({ type: 'PalmSave' });
 }
 
 /**
