@@ -31,6 +31,8 @@ everything is drawn with simple shapes.
   Falcon). After each win you pick 1 of 3 new moves and recover 3 balance.
   Your balance carries over. One loss ends the run.
 
+**In-game help:** the **Guide** button on the menu (and the **?** button during a match, which pauses it) explains the rules, grip, opponents and their patterns, defense, card combos, tactics, and lists every card. During a match a tip line under the intent panel suggests a useful move (e.g. when an attack would make you fall, or which grip a card needs).
+
 At the end, press **Copy summary** and paste it to the developer along with
 your feedback. The summary includes the seed and version, so the run can be
 replayed exactly.
@@ -95,8 +97,8 @@ build works under `https://<user>.github.io/<repo>/`.
 src/core/      pure game rules (no Phaser) — reducer, RNG, run, bot
 src/data/      cards.json, opponents.json, rules.json — every tunable number
 src/i18n/      en.json, mn.json
-src/scenes/    Phaser scenes: Menu, Match, Reward, RunEnd
-src/ui/        drawing helpers (cards, wrestlers, buttons, bars)
+src/scenes/    Phaser scenes: Menu, Match, Reward, RunEnd, Guide
+src/ui/        drawing helpers (cards, wrestlers, buttons, bars) + match tips
 tests/         Vitest tests (rule tests use frozen fixture data)
 scripts/       sim.ts, tune.ts
 ```

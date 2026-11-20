@@ -17,6 +17,7 @@ import { cardName, gripName, moveName, opponentName, t } from '../i18n';
 import { DEBUG, session } from '../session';
 import { CARD_H, CARD_W, makeCard } from '../ui/cardView';
 import { C, H, W, hex, textStyle } from '../ui/theme';
+import { matchTip } from '../ui/tips';
 import { banner, floatText, makeBar, makeButton, wait, type Bar, type Button } from '../ui/widgets';
 import { Wrestler } from '../ui/wrestler';
 
@@ -53,6 +54,7 @@ export class MatchScene extends Phaser.Scene {
   private endTurnBtn!: Button;
   private handCards: Phaser.GameObjects.Container[] = [];
   private tapHint!: Phaser.GameObjects.Text;
+  private tipText!: Phaser.GameObjects.Text;
 
   constructor() {
     super('Match');
@@ -141,6 +143,36 @@ export class MatchScene extends Phaser.Scene {
     this.oppGuard = this.add
       .text(1180, 80, '', textStyle(22, C.cream, { fontStyle: 'bold', backgroundColor: hex(C.guard), padding: { x: 8, y: 4 } }))
       .setOrigin(0, 0.5);
+
+    // Guide button (pauses the match)
+    makeButton(this, W - 34, 34, 52, 52, '?', () => this.openGuide(), { fontSize: 30 });
+
+    // Contextual coaching tip under the intent panel
+    this.tipText = this.add
+      .text(40, 130, '', textStyle(20, C.gold, { fontStyle: 'bold', wordWrap: { width: 690 }, stroke: '#000', strokeThickness: 4 }))
+      .setDepth(5);
+  }
+
+  private openGuide(): void {
+    if (this.busy) return;
+    this.selected = -1;
+    this.layoutHand(false);
+    this.scene.launch('Guide', { from: 'Match' });
+    this.scene.pause();
+  }
+
+  private refreshTip(): void {
+    const tip = this.busy ? null : matchTip(this.state);
+    if (!tip) {
+      this.tipText.setText('');
+      return;
+    }
+    const params: Record<string, string | number> = { ...tip.params };
+    for (const [k, id] of Object.entries(tip.cards ?? {})) params[k] = cardName(id);
+    for (const [k, id] of Object.entries(tip.moves ?? {})) params[k] = moveName(id);
+    for (const [k, g] of Object.entries(tip.grips ?? {})) params[k] = gripName(g);
+    this.tipText.setText(t(tip.key, params));
+    this.tipText.setColor(hex(tip.key === 'tip.lethal' || tip.key === 'tip.palm' ? C.danger : C.gold));
   }
 
   private buildMiddle(): void {
@@ -231,6 +263,7 @@ export class MatchScene extends Phaser.Scene {
 
     this.pileText.setText(`${t('hud.draw', { n: s.drawPile.length })} · ${t('hud.discard', { n: s.discardPile.length })}`);
     this.refreshIntent();
+    this.refreshTip();
     this.layoutHand(false, true);
     this.endTurnBtn.setEnabled(!this.busy && s.phase !== 'over');
   }
@@ -406,6 +439,7 @@ export class MatchScene extends Phaser.Scene {
     const { state, events } = applyAction(this.state, action);
     this.busy = true;
     this.endTurnBtn.setEnabled(false);
+    this.tipText.setText('');
     const prev = this.state;
     this.state = state;
     session.setMatch(state);
